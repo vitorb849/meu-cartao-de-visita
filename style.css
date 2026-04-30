@@ -1,23 +1,30 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg:         #e8e4df;
-  --page-bg:    #faf8f5;
-  --text:       #1a1a1a;
-  --muted:      #999;
-  --border:     #e0dcd6;
-  --cover-bg:   #1a1a1a;
-  --cover-text: #faf8f5;
-  --font-display: 'DM Serif Display', serif;
-  --font-body:    'DM Sans', sans-serif;
-  --book-w: 300px;
-  --book-h: 400px;
+  --bg:          #0d0606;
+  --page-bg:     #fdf9f5;
+  --text:        #1a1a1a;
+  --muted:       #999;
+  --border:      #e0dcd6;
+  --red:         #c41111;
+  --red-dark:    #8b0000;
+  --red-shadow:  #5a0000;
+  --font-pixel:    'Press Start 2P', monospace;
+  --font-display:  'DM Serif Display', serif;
+  --font-body:     'DM Sans', sans-serif;
+  --book-w: 360px;
+  --book-h: 480px;
 }
 
 html, body {
   height: 100%;
   font-family: var(--font-body);
   background: var(--bg);
+  /* Grade de pixels no fundo */
+  background-image:
+    linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 16px 16px;
   color: var(--text);
   -webkit-font-smoothing: antialiased;
 }
@@ -38,21 +45,17 @@ html, body {
   width: var(--book-w);
   height: var(--book-h);
   perspective: 1400px;
-  border-radius: 2px 10px 10px 2px;
-  box-shadow:
-    -6px 0 10px rgba(0,0,0,0.18),
-    0 6px 32px rgba(0,0,0,0.14),
-    0 20px 60px rgba(0,0,0,0.08);
+  /* Sombra pixel-art (sem blur) */
+  box-shadow: 8px 8px 0 var(--red-shadow);
 }
 
-/* Lombada */
+/* Lombada vermelha */
 .book::before {
   content: '';
   position: absolute;
   left: 0; top: 0; bottom: 0;
-  width: 5px;
-  background: linear-gradient(to right, rgba(0,0,0,0.25), transparent);
-  border-radius: 2px 0 0 2px;
+  width: 6px;
+  background: var(--red-dark);
   z-index: 300;
   pointer-events: none;
 }
@@ -64,7 +67,6 @@ html, body {
   transform-style: preserve-3d;
   transform-origin: left center;
   transition: transform 0.75s cubic-bezier(0.645, 0.045, 0.355, 1.000);
-  border-radius: 0 10px 10px 0;
 }
 
 .page.flipped {
@@ -76,7 +78,6 @@ html, body {
   inset: 0;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  border-radius: 0 10px 10px 0;
   background: var(--page-bg);
   display: flex;
   flex-direction: column;
@@ -84,49 +85,60 @@ html, body {
   padding: 2rem;
 }
 
-/* ── Capa ── */
+/* ── Capa (pixel art vermelha) ── */
 .cover-face {
-  background: var(--cover-bg);
-  color: var(--cover-text);
+  background-color: var(--red);
+  /* Grade pixel na capa */
+  background-image:
+    linear-gradient(rgba(0,0,0,0.15) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,0.15) 1px, transparent 1px);
+  background-size: 8px 8px;
+  color: #fff;
 }
 
 .cover-tag {
-  font-size: 0.62rem;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.4);
+  font-family: var(--font-pixel);
+  font-size: 0.42rem;
+  letter-spacing: 0.06em;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.8;
 }
 
 .cover-name {
-  font-family: var(--font-display);
-  font-size: 2.8rem;
-  line-height: 1.05;
-  letter-spacing: -0.02em;
+  font-family: var(--font-pixel);
+  font-size: 1.35rem;
+  line-height: 1.7;
   display: flex;
   flex-direction: column;
-  color: var(--cover-text);
+  color: #fff;
+  /* Sombra pixel no texto */
+  text-shadow: 3px 3px 0 var(--red-dark);
 }
 
 .cover-name em {
-  font-style: italic;
-  color: rgba(255,255,255,0.5);
+  font-style: normal;
+  color: rgba(255,255,255,0.6);
+  text-shadow: 3px 3px 0 rgba(0,0,0,0.3);
 }
 
 .cover-location {
-  font-size: 0.72rem;
-  color: rgba(255,255,255,0.35);
+  font-family: var(--font-pixel);
+  font-size: 0.42rem;
+  color: rgba(255,255,255,0.4);
   letter-spacing: 0.08em;
+  line-height: 1.8;
 }
 
 .flip-hint {
-  font-size: 0.68rem;
+  font-family: var(--font-pixel);
+  font-size: 0.38rem;
   color: rgba(255,255,255,0.3);
   letter-spacing: 0.06em;
   align-self: flex-end;
+  line-height: 2;
 }
 
-/* ── Inner ── */
+/* ── Conteúdo interno ── */
 .page-inner {
   display: flex;
   flex-direction: column;
@@ -135,11 +147,21 @@ html, body {
 }
 
 .page-label {
-  font-size: 0.62rem;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--muted);
+  font-family: var(--font-pixel);
+  font-size: 0.5rem;
+  letter-spacing: 0.1em;
+  color: var(--red);
+  line-height: 2;
+}
+
+/* Linha vermelha abaixo do label */
+.page-label::after {
+  content: '';
+  display: block;
+  width: 24px;
+  height: 3px;
+  background: var(--red);
+  margin-top: 6px;
 }
 
 /* ── Sobre ── */
@@ -154,23 +176,23 @@ html, body {
 .skills {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem;
+  gap: 0.45rem;
 }
 
 .skill {
-  padding: 0.3rem 0.75rem;
-  border: 1px solid var(--border);
-  border-radius: 100px;
+  padding: 0.35rem 0.8rem;
+  border: 2px solid var(--border);
   font-size: 0.72rem;
   color: var(--text);
   background: white;
-  transition: background 0.15s, border-color 0.15s;
+  transition: background 0.1s, border-color 0.1s, color 0.1s;
+  cursor: default;
 }
 
 .skill:hover {
-  background: var(--text);
+  background: var(--red);
   color: white;
-  border-color: var(--text);
+  border-color: var(--red);
 }
 
 /* ── Contato ── */
@@ -184,23 +206,25 @@ html, body {
   justify-content: space-between;
   align-items: center;
   padding: 1rem 0;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 2px solid var(--border);
   text-decoration: none;
   color: var(--text);
   font-family: var(--font-display);
   font-size: 1.6rem;
-  transition: opacity 0.2s;
+  transition: color 0.15s;
 }
 
-.contact-item:first-child { border-top: 1px solid var(--border); }
-.contact-item:hover { opacity: 0.35; }
+.contact-item:first-child { border-top: 2px solid var(--border); }
+.contact-item:hover { color: var(--red); }
 
 /* ── Número de página ── */
 .pg-num {
-  font-size: 0.6rem;
+  font-family: var(--font-pixel);
+  font-size: 0.42rem;
   color: var(--muted);
   letter-spacing: 0.1em;
   align-self: flex-end;
+  line-height: 2;
 }
 
 /* ── Controles ── */
@@ -213,26 +237,27 @@ html, body {
 .nav-btn {
   width: 38px;
   height: 38px;
-  border: 1px solid var(--border);
-  border-radius: 50%;
-  background: white;
-  color: var(--text);
-  font-size: 1.25rem;
+  border: 2px solid rgba(255,255,255,0.15);
+  background: transparent;
+  color: rgba(255,255,255,0.6);
+  font-size: 1.3rem;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.15s, color 0.15s;
+  transition: background 0.1s, color 0.1s, border-color 0.1s;
   line-height: 1;
 }
 
 .nav-btn:hover:not(:disabled) {
-  background: var(--text);
+  background: var(--red);
   color: white;
+  border-color: var(--red);
+  box-shadow: 3px 3px 0 var(--red-shadow);
 }
 
 .nav-btn:disabled {
-  opacity: 0.25;
+  opacity: 0.2;
   cursor: default;
 }
 
@@ -243,21 +268,22 @@ html, body {
 }
 
 .dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--border);
+  width: 8px;
+  height: 8px;
+  background: rgba(255,255,255,0.2);
   transition: background 0.2s;
 }
 
 .dot.active {
-  background: var(--text);
+  background: var(--red);
+  box-shadow: 2px 2px 0 var(--red-shadow);
 }
 
 /* ── Mobile ── */
 @media (max-width: 480px) {
   :root {
-    --book-w: 272px;
-    --book-h: 360px;
+    --book-w: 300px;
+    --book-h: 400px;
   }
+  .cover-name { font-size: 1.1rem; }
 }
