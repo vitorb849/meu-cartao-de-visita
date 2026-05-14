@@ -45,19 +45,41 @@ html, body {
   width: var(--book-w);
   height: var(--book-h);
   perspective: 1400px;
-  /* Sombra pixel-art (sem blur) */
-  box-shadow: 8px 8px 0 var(--red-shadow);
+  box-shadow:
+    8px 8px 0 var(--red-shadow),
+    0 20px 50px rgba(0,0,0,0.55);
 }
 
-/* Lombada vermelha */
+/* Lombada */
 .book::before {
   content: '';
   position: absolute;
   left: 0; top: 0; bottom: 0;
-  width: 6px;
-  background: var(--red-dark);
+  width: 18px;
+  background: linear-gradient(to right, #3d0000, var(--red-dark) 60%, #a01010);
+  box-shadow: inset -3px 0 6px rgba(0,0,0,0.4);
   z-index: 300;
   pointer-events: none;
+}
+
+/* Pilha de páginas (borda direita) */
+.book::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: -10px;
+  width: 12px;
+  height: 100%;
+  background-color: #ede9e3;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgba(0,0,0,0.06) 0px,
+    rgba(0,0,0,0.06) 1px,
+    transparent 1px,
+    transparent 5px
+  );
+  border-right: 1px solid #b8b4ae;
+  z-index: -1;
 }
 
 /* ── Páginas ── */
@@ -82,7 +104,8 @@ html, body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 2rem;
+  padding: 2rem 2rem 2rem 2.5rem;
+  box-shadow: inset 8px 0 16px rgba(0,0,0,0.08);
 }
 
 /* ── Capa (pixel art vermelha) ── */
@@ -96,37 +119,56 @@ html, body {
   color: #fff;
 }
 
-.cover-tag {
+.cover-edition {
   font-family: var(--font-pixel);
-  font-size: 0.42rem;
-  letter-spacing: 0.06em;
-  color: rgba(255,255,255,0.55);
-  line-height: 1.8;
+  font-size: 0.35rem;
+  letter-spacing: 0.14em;
+  color: rgba(255,255,255,0.25);
+  text-transform: uppercase;
 }
 
 .cover-name {
   font-family: var(--font-pixel);
-  font-size: 1.35rem;
+  font-size: 1.55rem;
   line-height: 1.7;
   display: flex;
   flex-direction: column;
   color: #fff;
-  /* Sombra pixel no texto */
-  text-shadow: 3px 3px 0 var(--red-dark);
+  text-shadow: 4px 4px 0 var(--red-dark);
 }
 
 .cover-name em {
   font-style: normal;
-  color: rgba(255,255,255,0.6);
-  text-shadow: 3px 3px 0 rgba(0,0,0,0.3);
+  color: rgba(255,255,255,0.5);
+  text-shadow: 4px 4px 0 rgba(0,0,0,0.25);
 }
 
-.cover-location {
+.cover-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.cover-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.cover-course {
   font-family: var(--font-pixel);
-  font-size: 0.42rem;
-  color: rgba(255,255,255,0.4);
-  letter-spacing: 0.08em;
-  line-height: 1.8;
+  font-size: 0.4rem;
+  color: rgba(255,255,255,0.6);
+  letter-spacing: 0.06em;
+  line-height: 2;
+}
+
+.cover-school {
+  font-family: var(--font-pixel);
+  font-size: 0.35rem;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: 0.06em;
+  line-height: 2;
 }
 
 .flip-hint {
@@ -134,8 +176,8 @@ html, body {
   font-size: 0.38rem;
   color: rgba(255,255,255,0.3);
   letter-spacing: 0.06em;
-  align-self: flex-end;
   line-height: 2;
+  white-space: nowrap;
 }
 
 /* ── Conteúdo interno ── */
@@ -147,9 +189,11 @@ html, body {
 }
 
 .page-label {
-  font-family: var(--font-pixel);
-  font-size: 0.5rem;
-  letter-spacing: 0.1em;
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
   color: var(--red);
   line-height: 2;
 }
@@ -219,12 +263,11 @@ html, body {
 
 /* ── Número de página ── */
 .pg-num {
-  font-family: var(--font-pixel);
-  font-size: 0.42rem;
+  font-family: var(--font-body);
+  font-size: 0.65rem;
   color: var(--muted);
-  letter-spacing: 0.1em;
+  letter-spacing: 0.06em;
   align-self: flex-end;
-  line-height: 2;
 }
 
 /* ── Controles ── */
@@ -277,6 +320,126 @@ html, body {
 .dot.active {
   background: var(--red);
   box-shadow: 2px 2px 0 var(--red-shadow);
+}
+
+/* ── Idiomas ── */
+.lang-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.lang-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.lang-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.lang-name  { font-size: 0.88rem; font-weight: 500; color: var(--text); }
+.lang-level { font-size: 0.7rem;  color: var(--muted); }
+
+.lang-bar {
+  height: 3px;
+  background: var(--border);
+}
+
+.lang-fill {
+  height: 100%;
+  background: var(--red);
+}
+
+/* ── Trajetória ── */
+.exp-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.exp-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.exp-item:first-child { padding-top: 0; }
+.exp-item:last-child  { border-bottom: none; }
+
+.exp-company {
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  font-weight: 500;
+  color: var(--red);
+  letter-spacing: 0.04em;
+}
+
+.exp-role {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.exp-period {
+  font-size: 0.7rem;
+  color: var(--muted);
+  margin-top: 0.1rem;
+}
+
+.exp-desc {
+  font-size: 0.75rem;
+  line-height: 1.65;
+  color: var(--text);
+  margin-top: 0.25rem;
+  font-weight: 300;
+}
+
+/* ── Formação ── */
+.edu-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.edu-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.edu-item:first-child { padding-top: 0; }
+.edu-item:last-child  { border-bottom: none; }
+
+.edu-institution {
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  font-weight: 500;
+  color: var(--red);
+  letter-spacing: 0.04em;
+}
+
+.edu-course {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.edu-detail {
+  font-size: 0.75rem;
+  line-height: 1.65;
+  color: var(--text);
+  margin-top: 0.25rem;
+  font-weight: 300;
 }
 
 /* ── Mobile ── */

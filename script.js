@@ -3,6 +3,10 @@ const pages = [
   document.getElementById('p2'),
   document.getElementById('p3'),
   document.getElementById('p4'),
+  document.getElementById('p5'),
+  document.getElementById('p6'),
+  document.getElementById('p7'),
+  document.getElementById('p8'),
 ];
 
 const btnPrev = document.getElementById('btn-prev');
@@ -58,9 +62,19 @@ function updateUI() {
 btnPrev.addEventListener('click', () => goTo(current - 1));
 btnNext.addEventListener('click', () => goTo(current + 1));
 
-// Swipe (mobile)
+// Swipe (trackpad macOS e mobile)
 let touchStartX = 0;
 const book = document.getElementById('book');
+
+let wheelCooldown = false;
+document.addEventListener('wheel', e => {
+  if (wheelCooldown || animating) return;
+  if (Math.abs(e.deltaX) < Math.abs(e.deltaY)) return; // ignora scroll vertical
+  if (Math.abs(e.deltaX) < 30) return;                  // ignora micro-movimentos
+  wheelCooldown = true;
+  e.deltaX > 0 ? goTo(current + 1) : goTo(current - 1);
+  setTimeout(() => { wheelCooldown = false; }, DURATION + 100);
+}, { passive: true });
 
 book.addEventListener('touchstart', e => {
   touchStartX = e.touches[0].clientX;
